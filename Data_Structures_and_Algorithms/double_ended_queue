@@ -1,0 +1,122 @@
+#include <stdio.h>
+#define MAX 100
+
+int q[MAX];
+int f = -1; // Front pointer
+int r = -1; // Rear pointer
+
+// Function to insert an item at the front of the queue
+void infro(int item) {
+    if (((f - 1 + MAX) % MAX) == r) {
+        printf("Queue overflow\n");
+    } else if (f == -1) {
+        f = r = 0;
+        q[f] = item;
+    } else {
+        f = (f - 1 + MAX) % MAX;
+        q[f] = item;
+    }
+}
+
+// Function to insert an item at the rear of the queue
+void inrea(int item) {
+    if (((r + 1) % MAX) == f) {
+        printf("Queue overflow\n");
+    } else if (r == -1) {
+        f = r = 0;
+        q[r] = item;
+    } else {
+        r = (r + 1) % MAX;
+        q[r] = item;
+    }
+}
+
+// Function to delete an item from the front of the queue
+void delfro() {
+    if (f == -1) {
+        printf("Queue underflow\n");
+    } else if (f == r) {
+        int item = q[f];
+        f = r = -1;
+        printf("%d deleted from the front\n", item);
+    } else {
+        int item = q[f];
+        f = (f + 1) % MAX;
+        printf("%d deleted from the front\n", item);
+    }
+}
+
+// Function to delete an item from the rear of the queue
+void delrea() {
+    if (r == -1) {
+        printf("Queue underflow\n");
+    } else if (f == r) {
+        int item = q[r];
+        f = r = -1;
+        printf("%d deleted from the rear\n", item);
+    } else {
+        int item = q[r];
+        r = (r - 1 + MAX) % MAX;
+        printf("%d deleted from the rear\n", item);
+    }
+}
+
+// Function to display the elements of the queue
+void display() {
+    if (f == -1) {
+        printf("Queue is empty\n");
+        return;
+    }
+    int i = f;
+    printf("Queue elements are: ");
+    while (1) {
+        printf("%d ", q[i]);
+        if (i == r) break;
+        i = (i + 1) % MAX;
+    }
+    printf("\n");
+}
+
+// Main function to interact with the double-ended queue
+int main() {
+    int item, ch;
+    do {
+        printf("\n1. Delete from front (delfro)\n");
+        printf("2. Delete from rear (delrea)\n");
+        printf("3. Insert at front (infro)\n");
+        printf("4. Insert at rear (inrea)\n");
+        printf("5. Display\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &ch);
+        
+        switch (ch) {
+            case 1:
+                delfro();
+                break;
+            case 2:
+                delrea();
+                break;
+            case 3:
+                printf("Enter element to insert at front: ");
+                scanf("%d", &item);
+                infro(item);
+                break;
+            case 4:
+                printf("Enter element to insert at rear: ");
+                scanf("%d", &item);
+                inrea(item);
+                break;
+            case 5:
+                display();
+                break;
+            case 6:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice, please try again.\n");
+        }
+    } while (ch != 6);
+
+    return 0;
+}
