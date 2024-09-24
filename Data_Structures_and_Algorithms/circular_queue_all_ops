@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 10
+
+int q[MAX];
+int f = -1; // Front pointer
+int r = -1; // Rear pointer
+
+// Function to check if the queue is full
+int isFull() {
+    if ((r + 1) % MAX == f) {
+        printf("Queue overflow\n");
+        return 1;
+    } else {
+        printf("Queue is not full\n");
+        return 0;
+    }
+}
+
+// Function to add an element to the queue
+void enqueue(int ele) {
+    if (isFull()) {
+        return; // Queue is full, cannot enqueue
+    }
+    if (r == -1) {
+        f = r = 0; // First element to be added
+    } else {
+        r = (r + 1) % MAX; // Increment rear in circular manner
+    }
+    q[r] = ele;
+    printf("%d enqueued to the queue\n", ele);
+}
+
+// Function to check if the queue is empty
+int isEmpty() {
+    if (f == -1) {
+        printf("Queue underflow\n");
+        return 1;
+    } else {
+        printf("Queue is not empty\n");
+        return 0;
+    }
+}
+
+// Function to remove an element from the queue
+void dequeue() {
+    if (isEmpty()) {
+        return; // Queue is empty, cannot dequeue
+    }
+    int ele = q[f];
+    if (f == r) {
+        f = r = -1; // Queue becomes empty after this dequeue
+    } else {
+        f = (f + 1) % MAX; // Increment front in circular manner
+    }
+    printf("%d dequeued from the queue\n", ele);
+}
+
+// Function to display the elements of the queue
+void display() {
+    if (isEmpty()) {
+        return; // Queue is empty, nothing to display
+    }
+    printf("Queue elements are: ");
+    int i = f;
+    while (1) {
+        printf("%d ", q[i]);
+        if (i == r)
+            break;
+        i = (i + 1) % MAX;
+    }
+    printf("\n");
+}
+
+// Main function to interact with the queue
+int main() {
+    int ele, ch;
+    do {
+        printf("\n1. Check if full\n");
+        printf("2. Enqueue\n");
+        printf("3. Check if empty\n");
+        printf("4. Dequeue\n");
+        printf("5. Display\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &ch);
+        switch (ch) {
+            case 1:
+                isFull();
+                break;
+            case 2:
+                printf("Enter element to enqueue: ");
+                scanf("%d", &ele);
+                enqueue(ele);
+                break;
+            case 3:
+                isEmpty();
+                break;
+            case 4:
+                dequeue();
+                break;
+            case 5:
+                display();
+                break;
+            case 6:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice, please try again.\n");
+                break;
+        }
+    } while (ch != 6);
+
+    return 0;
+}
