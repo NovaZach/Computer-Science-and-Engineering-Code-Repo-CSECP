@@ -1,0 +1,104 @@
+#include<stdio.h>
+#define MAX 100 
+char stack[MAX];
+int top=-1;
+int operandStack[MAX];
+int operandTop=-1;
+void push(char x){
+    if(top<MAX-1){
+        stack[++top]=x;
+    }
+}
+char pop(){
+    if(top>=0){
+        return stack[top--];
+    }
+    return -1;
+}
+void pushoperand(int x){
+    if(operandTop<MAX-1){
+        operandStack[++operandTop]=x;
+    }
+}
+
+int popoperand(){
+    if(operandTop>=0){
+        return operandStack[operandTop--];
+    }
+    return -1;
+}
+int precedence(char x){
+    if(x=='^')
+        return 3;
+    else if(x=='*' || x=='/')
+        return 2;
+    else if(x=='+' || x=='-')
+        return 1;
+    else
+        return 0;
+}
+int isoperand(char x){
+    return (x>='a' && x<='z') || (x>='A' && x<='Z')||(x>='0'&& x<='9');
+}
+void convert(char infix[],char postfix[]){
+    int i,j;
+    for(i=0,j=0;infix[i]!='\0';i++){
+        if(isoperand(infix[i])){
+            postfix[j++]=infix[i];
+        }
+        else if(infix[i]=='('){
+            push(infix[i]);
+        }
+        else if(infix[i]==')'){
+            while(stack[top]!='('){
+                postfix[j++]=pop();
+            }
+            pop();
+        }
+        else{
+            while(precedence(stack[top])>=precedence(infix[i])){
+                postfix[j++]=pop();
+            }
+            push(infix[i]);
+        }
+    }
+    while(top!= -1){
+        postfix[j++]=pop();
+    }
+    postfix[j]='\0';
+}
+int evaluate(char postfix[]){
+    int i,op1,op2;
+    for(i=0;postfix[i]!='\0';i++){
+        if(isoperand(postfix[i])){
+            int val;
+            printf("enter the value of %c",postfix[i]);
+            scanf("%d",&val);
+            pushoperand(val);
+        }
+        else{
+            op2=popoperand();
+            op1=popoperand();
+            switch(postfix[i]){
+                case '+': pushoperand(op1+op2); break;
+                case '-': pushoperand(op1-op2); break;
+                case '*': pushoperand(op1*op2); break;
+                case '/': pushoperand(op1/op2); break;
+                case '^': pushoperand(op1^op2); break;
+            }
+        }
+    }
+    return popoperand();  // return the final result of the expression.  // The stack should be empty after this function call.  // If not, there is an error in the expression.  // The expression should not contain any operator with higher precedence than the one on the top of the stack.  // The expression should not contain any operator with the same precedence as the one on the top of the stack.  // The expression should not contain any left parenthesis.  // The expression
+}
+int main(){
+    char infix[MAX] ,postfix[MAX];
+    int result;
+    printf("Enter the infix expression: ");
+    scanf("%s",infix);
+    convert(infix,postfix);
+
+    printf("The postfix expression is: %s\n",postfix);
+    result=evaluate(postfix);
+    printf("The result is: %d\n",result);
+    return 0;
+}
